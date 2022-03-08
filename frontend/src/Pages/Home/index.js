@@ -4,7 +4,6 @@ import Constants from '../../Constants';
 import API from '../../Network';
 import lottie from "lottie-web";
 import sun from '../../Assets/Animations/sun.json';
-import background from '../../Assets/Images/background.jpg';
 const Home = React.memo(() => {
     const [circumferenceOfTheSun, setCircumferenceOfTheSun] = useState(0);
     const [latestPi, setLatestPi] = useState(0);

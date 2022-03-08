@@ -6,80 +6,11 @@ const cluster = require("cluster");
 const forks = require("os").cpus().length;
 const { calcPI } = require('./utils/util');
 const fs = require('fs');
-const port = 4001;
-const { WebSocketServer, WebSocket } = require('ws');
+const port = 6001;
 const filename = {
     decimals: 'decimals.txt',
     latestPi: 'latestPi.txt'
 };
-
-async function main() {
-    const wss = new WebSocketServer({ port: 8080 });
-
-    wss.on('connection', function connection(ws) {
-        ws.on('message', function message(data) {
-            console.log('received: %s', data);
-        });
-
-        ws.send('Connected to websocket');
-    });
-
-    let fsWait = false;
-    while (true) {
-        try {
-            fs.watch(filename.latestPi, async (event, file) => {
-                if (file) {
-                    if (fsWait) return;
-                    fsWait = setTimeout(() => {
-                        fsWait = false;
-                    }, 100);
-                    if (event === 'change') {
-                        const latestPiString = await new Promise((resolve, reject) => {
-                            fs.readFile(filename.latestPi, function (err, buf) {
-                                if (err) {
-                                    if (err.code === 'ENOENT') {
-                                        fs.writeFile(filename.latestPi, "3", (err) => {
-                                            if (err) console.log(err);
-                                        });
-                                        return resolve("3");
-                                    }
-                                    else {
-                                        reject(err);
-                                    }
-                                }
-                                else {
-                                    resolve(buf.toString());
-                                }
-                            });
-                        });
-                        wss.clients.forEach(function each(client) {
-                            if (client.readyState === WebSocket.OPEN) {
-                                client.send(latestPiString, { binary: false });
-                            }
-                        });
-                        console.log(latestPiString);
-                    }
-                }
-            });
-            break;
-        }
-        catch (err) {
-            if (err) {
-                if (err.code === 'ENOENT') {
-                    fs.writeFile(filename.latestPi, "3", (err) => {
-                        if (err) console.log(err);
-                    });
-                }
-                else {
-                    console.log(err);
-                    break;
-                }
-            }
-        }
-    }
-
-
-}
 
 async function fork() {
     app.use(express.json());
@@ -199,7 +130,6 @@ async function fork() {
 
 if (cluster.isMaster) {
     console.log("Server is starting up...");
-    main();
     for (let i = 0; i < forks; i++) {
         cluster.fork();
     }
