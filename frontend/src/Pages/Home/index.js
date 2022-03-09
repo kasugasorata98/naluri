@@ -1,6 +1,5 @@
-import { Box, Grid, Paper, Typography, Divider, Button } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import Constants from '../../Constants';
+import { Box, Grid, Typography, Button } from '@mui/material';
+import React, { useEffect, useState, useCallback } from 'react';
 import API from '../../Network';
 import lottie from "lottie-web";
 import sun from '../../Assets/Animations/sun.json';
@@ -8,36 +7,54 @@ const Home = React.memo(() => {
     const [circumferenceOfTheSun, setCircumferenceOfTheSun] = useState(0);
     const [latestPi, setLatestPi] = useState(0);
 
-    useEffect(() => {
+    const getCircumferenceOfSun = useCallback(() => {
         API()
-            .getPi()
+            .getCircumferenceOfSun()
             .then(res => {
                 console.log(res);
-                setLatestPi(res.latestPi);
+                setCircumferenceOfTheSun(res.circumferenceOfTheSun);
             })
             .catch(err => {
                 console.log(err);
             });
     }, []);
 
-    useEffect(() => {
+    const getLatestPiValue = useCallback(() => {
         API()
-            .getCircumferenceOfSun()
+            .getLatestPiValue()
             .then(res => {
                 console.log(res);
-                setCircumferenceOfTheSun(res.circumferenceOfTheSun);
-                lottie.loadAnimation({
-                    container: document.querySelector("#sun"),
-                    animationData: sun,
-                    renderer: "canvas", // "canvas", "html"
-                    loop: true, // boolean
-                    autoplay: true, // boolean
-                });
+                setLatestPi(res.latestPi);
+                getCircumferenceOfSun();
             })
             .catch(err => {
                 console.log(err);
             });
-    }, []);
+    }, [getCircumferenceOfSun]);
+
+    const getMorePrecisePi = useCallback(() => {
+        API()
+            .getMorePrecisePi()
+            .then(res => {
+                console.log(res);
+                setLatestPi(res.latestPi);
+                getCircumferenceOfSun();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }, [getCircumferenceOfSun]);
+
+    useEffect(() => {
+        getLatestPiValue();
+        lottie.loadAnimation({
+            container: document.querySelector("#sun"),
+            animationData: sun,
+            renderer: "canvas",
+            loop: true,
+            autoplay: true,
+        });
+    }, [getLatestPiValue]);
 
     const style = {
         container: {
@@ -94,6 +111,7 @@ const Home = React.memo(() => {
                     />
                 </Grid>
                 <Grid
+                    alignItems={'center'}
                     sx={style.box}
                     xs={12} item>
                     <Typography
@@ -112,9 +130,15 @@ const Home = React.memo(() => {
                         component="h5">
                         {`${latestPi}`}
                     </Typography>
+                    <Grid
+                        container
+                        justifyContent={'center'}
+                        item>
+                        <Button onClick={() => getMorePrecisePi()} variant="contained">Increase Precision</Button>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Box>
+        </Box >
     );
 });
 

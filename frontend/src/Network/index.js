@@ -9,10 +9,23 @@ const API = () => {
     });
 
     return {
-        getPi: () => {
+        getLatestPiValue: () => {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const { data } = await axiosInstance.get(`/getPi`);
+                    const { data } = await axiosInstance.get(`/v1/pi/getLatestPiValue`);
+                    resolve(data);
+                }
+                catch (err) {
+                    if (err && err.response && err.response.data) {
+                        reject(err.response.data);
+                    }
+                }
+            });
+        },
+        getMorePrecisePi: () => {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const { data } = await axiosInstance.get(`/v1/pi/getMorePrecisePi`);
                     resolve(data);
                 }
                 catch (err) {
@@ -25,7 +38,7 @@ const API = () => {
         getCircumferenceOfSun: () => {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const { data } = await axiosInstance.get(`/getCircumferenceOfSun`);
+                    const { data } = await axiosInstance.get(`/v1/circumference/getCircumferenceOfSun`);
                     resolve(data);
                 }
                 catch (err) {
