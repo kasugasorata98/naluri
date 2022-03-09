@@ -34,8 +34,8 @@ npm start
 Additional Steps to access the application
 
 ```sh
-Backend IP : localhost:3000
-Frontend IP: localhost:6001
+Backend IP : localhost:6001
+Frontend IP: localhost:3000
 ```
 
 ## Limitations
