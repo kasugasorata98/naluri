@@ -19,6 +19,7 @@ Install the dependencies and start the server.
 ```sh
 cd backend
 npm install
+npm test (this is for unit testing, skip if unnecessary)
 npm start
 ```
 
@@ -48,3 +49,9 @@ Another limitation is the circumference of sun being unable to be more than 20 i
 In the future, it is possible to use a database like MongoDB with its 'Transaction' feature in-order to lock any changes made to the document (database table) if an operation is already in process. This will solve the limitations stated above.
 
 Perhaps, in the future, there would be a way to perform multiplications using JavaScript that could return the value in string so that there can be more than just 20 numbers.
+
+The calculation for the circumference of the sun is done in the backend. Therefore, the load on the server is higher compared to if it was done on the client side. For the simplicity of this project, I decided to perform all intensive processes on the backend as it would make use of a multi-threaded cpu. In the future, should the application be load tested, the calculation of the circumference of the sun should be done on the client side.
+
+## Additional Thoughts
+
+Personally in my opinion, cpu intensive tasks should be done in the backend whenever possible to offload the stress on the client side. This is so that the users can have a better experience overall. It makes sense that some tasks should be done on the client side instead, but it really depends on if the server can handle the load or not.
