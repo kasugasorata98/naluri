@@ -3,7 +3,6 @@ const cors = require('cors');
 const app = express();
 const cluster = require("cluster");
 const forks = require("os").cpus().length;
-const fs = require('fs');
 const port = 6001;
 
 async function fork() {
